@@ -1,7 +1,283 @@
 library image_selector_form;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:image_picker_modern/image_picker_modern.dart';
+import 'package:image_cropper/image_cropper.dart';
+
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+export 'package:image_cropper/src/options.dart';
+
+class ImageSelectorFormField extends StatefulWidget {
+  ImageSelectorFormField(
+      {Key key,
+      this.initialImage,
+      this.imageURL = "",
+      this.cropRatioX,
+      this.cropRatioY,
+      this.boxConstraints = const BoxConstraints(maxHeight: 300, maxWidth: 300),
+      this.borderRadius,
+      this.cropMaxWidth = 720,
+      this.cropMaxHeight = 1280,
+      this.cropStyle = CropStyle.rectangle,
+      this.compressQuality = 90,
+      this.compressFormat = ImageCompressFormat.jpg,
+      this.aspectRatioPresets = CropAspectRatioPreset.values,
+      this.androidUiSettings,
+      this.iosUiSettings,
+      this.onSaved,
+      this.validator,
+      this.errorTextStyle,
+      this.icon,
+      this.backgroundColor = Colors.black12})
+      : super(key: key);
+
+  final File initialImage;
+  final String imageURL;
+  final double cropRatioX;
+  final double cropRatioY;
+  final BoxConstraints boxConstraints;
+  final double borderRadius;
+  final int cropMaxWidth;
+  final int cropMaxHeight;
+  final CropStyle cropStyle;
+  final int compressQuality;
+  final List<CropAspectRatioPreset> aspectRatioPresets;
+  final ImageCompressFormat compressFormat;
+  final AndroidUiSettings androidUiSettings;
+  final IOSUiSettings iosUiSettings;
+  final TextStyle errorTextStyle;
+  final Icon icon;
+  final Color backgroundColor;
+  final void Function(File) onSaved;
+  final String Function(File) validator;
+  @override
+  _ImageSelectorFormFieldState createState() => _ImageSelectorFormFieldState();
+}
+
+class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
+  File _imageFile;
+  String _imageURL;
+  double _aspectRatio;
+  double _borderRadius;
+
+  @override
+  void initState() {
+    _imageFile = widget.initialImage;
+    _imageURL = widget.imageURL;
+    // set default aspect ratio
+    if (widget.cropRatioX != null && widget.cropRatioY != null) {
+      _aspectRatio = widget.cropRatioX / widget.cropRatioY;
+    } else {
+      _aspectRatio = 9 / 16;
+    }
+
+    if (widget.borderRadius != null) {
+      _borderRadius = widget.borderRadius;
+    } else {
+      if (widget.cropStyle == CropStyle.circle) {
+        _borderRadius = 160;
+      } else {
+        _borderRadius = 15;
+      }
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FormField<File>(onSaved: (_imagen) {
+      if (widget.onSaved != null) widget.onSaved(_imagen);
+    }, validator: (_imagen) {
+      if (widget.validator != null) return widget.validator(_imagen);
+      return null;
+    }, builder: (state) {
+      if (widget.cropStyle == CropStyle.rectangle) {
+        return Column(
+          children: <Widget>[
+            Container(
+                constraints: widget.boxConstraints,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(_borderRadius),
+                  child: Container(
+                    color: widget.backgroundColor,
+                    child: AspectRatio(
+                        aspectRatio: _aspectRatio,
+                        child: _InkWidget(
+                          cropStyle: widget.cropStyle,
+                          imageFile: _imageFile,
+                          imageURL: _imageURL,
+                          androidUiSettings: widget.androidUiSettings,
+                          compressFormat: widget.compressFormat,
+                          aspectRatioPresets: widget.aspectRatioPresets,
+                          compressQuality: widget.compressQuality,
+                          cropMaxHeight: widget.cropMaxHeight,
+                          cropMaxWidth: widget.cropMaxWidth,
+                          cropRatioX: widget.cropRatioX,
+                          cropRatioY: widget.cropRatioY,
+                          iosUiSettings: widget.iosUiSettings,
+                          icon: widget.icon ??
+                              Icon(
+                                Icons.add_a_photo,
+                                size: _borderRadius / 2,
+                                color: Colors.black45,
+                              ),
+                        )),
+                  ),
+                )),
+            state.hasError
+                ? Container(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Text(state.errorText,
+                        style: this.widget.errorTextStyle))
+                : Container()
+          ],
+        );
+      } else {
+        return Column(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(_borderRadius),
+              child: Container(
+                width: _borderRadius,
+                height: _borderRadius,
+                decoration: BoxDecoration(color: widget.backgroundColor),
+                child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: _InkWidget(
+                      cropStyle: widget.cropStyle,
+                      imageFile: _imageFile,
+                      imageURL: _imageURL,
+                      androidUiSettings: widget.androidUiSettings,
+                      compressFormat: widget.compressFormat,
+                      aspectRatioPresets: widget.aspectRatioPresets,
+                      compressQuality: widget.compressQuality,
+                      cropMaxHeight: widget.cropMaxHeight,
+                      cropMaxWidth: widget.cropMaxWidth,
+                      cropRatioX: widget.cropRatioX,
+                      cropRatioY: widget.cropRatioY,
+                      iosUiSettings: widget.iosUiSettings,
+                      borderRadius: _borderRadius,
+                      icon: widget.icon ??
+                          Icon(
+                            Icons.add_a_photo,
+                            size: _borderRadius / 2,
+                            color: Colors.black45,
+                          ),
+                    )),
+              ),
+            ),
+            state.hasError
+                ? Container(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Text(state.errorText,
+                        style: this.widget.errorTextStyle))
+                : Container()
+          ],
+        );
+      }
+    });
+  }
+}
+
+class _InkWidget extends StatefulWidget {
+  _InkWidget({
+    Key key,
+    this.imageFile,
+    this.imageURL,
+    this.cropStyle = CropStyle.rectangle,
+    this.cropRatioX,
+    this.cropRatioY,
+    this.borderRadius,
+    this.cropMaxWidth,
+    this.cropMaxHeight,
+    this.compressQuality,
+    this.aspectRatioPresets,
+    this.compressFormat,
+    this.androidUiSettings,
+    this.iosUiSettings,
+    this.icon,
+  }) : super(key: key);
+
+  final File imageFile;
+  final String imageURL;
+  final CropStyle cropStyle;
+  final double borderRadius;
+  final double cropRatioX;
+  final double cropRatioY;
+  final int cropMaxWidth;
+  final int cropMaxHeight;
+  final int compressQuality;
+  final List<CropAspectRatioPreset> aspectRatioPresets;
+  final ImageCompressFormat compressFormat;
+  final AndroidUiSettings androidUiSettings;
+  final IOSUiSettings iosUiSettings;
+  final Icon icon;
+
+  @override
+  __InkWidgetState createState() => __InkWidgetState();
+}
+
+class __InkWidgetState extends State<_InkWidget> {
+  File _imageFile;
+  String _imageURL;
+
+  Future<File> getImage() async {
+    print("por seleccionar imagen");
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      File croppedFile = await ImageCropper.cropImage(
+        aspectRatio: widget.cropRatioX != null && widget.cropRatioY != null
+            ? CropAspectRatio(
+                ratioX: widget.cropRatioX, ratioY: widget.cropRatioY)
+            : null,
+        sourcePath: image.path,
+        maxWidth: widget.cropMaxWidth,
+        maxHeight: widget.cropMaxHeight,
+        cropStyle: widget.cropStyle,
+        compressQuality: widget.compressQuality,
+        compressFormat: widget.compressFormat,
+        aspectRatioPresets: widget.aspectRatioPresets,
+        androidUiSettings: widget.androidUiSettings,
+        iosUiSettings: widget.iosUiSettings,
+      );
+      print("imagen seleccionada");
+      return croppedFile;
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      child: _imageFile == null
+          ? (_imageURL == null || _imageURL == "")
+              ? widget.cropStyle == CropStyle.circle
+                  ? // Widget to show when there isn't image - cropstyle circle
+                  Container(
+                      // size is necessary for Gesture area
+                      width: this.widget.borderRadius,
+                      height: this.widget.borderRadius,
+                      child: this.widget.icon,
+                    )
+                  : // Icon to show when there isn't image - cropstyle rectangle
+                  this.widget.icon
+              : (_imageURL != "" && _imageURL != null)
+                  ? CachedNetworkImage(
+                      alignment: Alignment.center,
+                      imageUrl: _imageURL,
+                      fit: BoxFit.cover,
+                    )
+                  : Container()
+          : Image.file(_imageFile),
+      onTap: () async {
+        await getImage().then((imagen) {
+          _imageFile = imagen;
+        });
+        print("apretado!");
+        setState(() {});
+      },
+    );
+  }
 }
