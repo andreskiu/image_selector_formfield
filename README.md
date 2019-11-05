@@ -73,7 +73,7 @@ ImageSelectorFormField(
  )
 ```
 
-![custom_circle.png](circle.png)
+![custom_circle.png](custom_circle.png)
 
 
 This project is a starting point for a Dart
