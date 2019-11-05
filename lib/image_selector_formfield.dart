@@ -1,4 +1,4 @@
-library image_selector_form;
+library image_selector_formfield;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker_modern/image_picker_modern.dart';
@@ -120,7 +120,10 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
                           icon: widget.icon ??
                               Icon(
                                 Icons.add_a_photo,
-                                size: _borderRadius / 2,
+                                size: widget.boxConstraints.biggest.width >
+                                        widget.boxConstraints.biggest.height
+                                    ? widget.boxConstraints.biggest.height / 2.5
+                                    : widget.boxConstraints.biggest.width / 2.5,
                                 color: Colors.black45,
                               ),
                         )),
@@ -226,10 +229,12 @@ class __InkWidgetState extends State<_InkWidget> {
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       File croppedFile = await ImageCropper.cropImage(
-        aspectRatio: widget.cropRatioX != null && widget.cropRatioY != null
-            ? CropAspectRatio(
-                ratioX: widget.cropRatioX, ratioY: widget.cropRatioY)
-            : null,
+        aspectRatio: widget.cropStyle == CropStyle.circle
+            ? CropAspectRatio(ratioX: 1.0, ratioY: 1.0)
+            : widget.cropRatioX != null && widget.cropRatioY != null
+                ? CropAspectRatio(
+                    ratioX: widget.cropRatioX, ratioY: widget.cropRatioY)
+                : null,
         sourcePath: image.path,
         maxWidth: widget.cropMaxWidth,
         maxHeight: widget.cropMaxHeight,
