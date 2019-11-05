@@ -223,7 +223,6 @@ class __InkWidgetState extends State<_InkWidget> {
   File _imageFile;
 
   Future<File> getImage() async {
-    print("por seleccionar imagen");
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       File croppedFile = await ImageCropper.cropImage(
@@ -241,7 +240,6 @@ class __InkWidgetState extends State<_InkWidget> {
         androidUiSettings: widget.androidUiSettings,
         iosUiSettings: widget.iosUiSettings,
       );
-      print("imagen seleccionada");
       return croppedFile;
     }
     return null;
@@ -249,12 +247,11 @@ class __InkWidgetState extends State<_InkWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("URL:" + widget.imageURL);
     return InkWell(
       child: _imageFile == null
           ? (widget.imageURL == null || widget.imageURL == "")
               ? widget.cropStyle == CropStyle.circle
-                  ? // Widget to show when there isn't image - cropstyle circle
+                  ? // Icon to show when there isn't image - cropstyle circle
                   Container(
                       // size is necessary for Gesture area
                       width: this.widget.borderRadius,
@@ -275,7 +272,6 @@ class __InkWidgetState extends State<_InkWidget> {
         await getImage().then((imagen) {
           _imageFile = imagen;
         });
-        print("apretado!");
         setState(() {});
       },
     );
