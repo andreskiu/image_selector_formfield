@@ -221,7 +221,6 @@ class _InkWidget extends StatefulWidget {
 
 class __InkWidgetState extends State<_InkWidget> {
   File _imageFile;
-  String _imageURL;
 
   Future<File> getImage() async {
     print("por seleccionar imagen");
@@ -250,9 +249,10 @@ class __InkWidgetState extends State<_InkWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("URL:" + widget.imageURL);
     return InkWell(
       child: _imageFile == null
-          ? (_imageURL == null || _imageURL == "")
+          ? (widget.imageURL == null || widget.imageURL == "")
               ? widget.cropStyle == CropStyle.circle
                   ? // Widget to show when there isn't image - cropstyle circle
                   Container(
@@ -263,10 +263,10 @@ class __InkWidgetState extends State<_InkWidget> {
                     )
                   : // Icon to show when there isn't image - cropstyle rectangle
                   this.widget.icon
-              : (_imageURL != "" && _imageURL != null)
+              : (widget.imageURL != "" && widget.imageURL != null)
                   ? CachedNetworkImage(
                       alignment: Alignment.center,
-                      imageUrl: _imageURL,
+                      imageUrl: widget.imageURL,
                       fit: BoxFit.cover,
                     )
                   : Container()
