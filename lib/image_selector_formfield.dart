@@ -95,8 +95,6 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
       if (widget.onSaved != null) return widget.onSaved(_imageFile);
       return null;
     }, validator: (_) {
-      print("EJECUTANDO VALIDATOR DEL WIDGET. IMAGEN?: " +
-          (_imageFile != null).toString());
       if (widget.validator != null) return widget.validator(_imageFile);
       return null;
     }, builder: (state) {
