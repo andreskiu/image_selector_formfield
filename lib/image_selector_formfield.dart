@@ -62,6 +62,10 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
   double _aspectRatio;
   double _borderRadius;
 
+  void _setImage(imagen) {
+    _imageFile = imagen;
+  }
+
   @override
   void initState() {
     _imageFile = widget.initialImage;
@@ -87,10 +91,13 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return FormField<File>(onSaved: (_imagen) {
-      if (widget.onSaved != null) widget.onSaved(_imagen);
-    }, validator: (_imagen) {
-      if (widget.validator != null) return widget.validator(_imagen);
+    return FormField<File>(onSaved: (_) {
+      if (widget.onSaved != null) return widget.onSaved(_imageFile);
+      return null;
+    }, validator: (_) {
+      print("EJECUTANDO VALIDATOR DEL WIDGET. IMAGEN?: " +
+          (_imageFile != null).toString());
+      if (widget.validator != null) return widget.validator(_imageFile);
       return null;
     }, builder: (state) {
       if (widget.cropStyle == CropStyle.rectangle) {
@@ -117,6 +124,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
                           cropRatioX: widget.cropRatioX,
                           cropRatioY: widget.cropRatioY,
                           iosUiSettings: widget.iosUiSettings,
+                          setImage: _setImage,
                           icon: widget.icon ??
                               Icon(
                                 Icons.add_a_photo,
@@ -162,6 +170,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
                       cropRatioY: widget.cropRatioY,
                       iosUiSettings: widget.iosUiSettings,
                       borderRadius: _borderRadius,
+                      setImage: _setImage,
                       icon: widget.icon ??
                           Icon(
                             Icons.add_a_photo,
@@ -185,23 +194,24 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
 }
 
 class _InkWidget extends StatefulWidget {
-  _InkWidget({
-    Key key,
-    this.imageFile,
-    this.imageURL,
-    this.cropStyle = CropStyle.rectangle,
-    this.cropRatioX,
-    this.cropRatioY,
-    this.borderRadius,
-    this.cropMaxWidth,
-    this.cropMaxHeight,
-    this.compressQuality,
-    this.aspectRatioPresets,
-    this.compressFormat,
-    this.androidUiSettings,
-    this.iosUiSettings,
-    this.icon,
-  }) : super(key: key);
+  _InkWidget(
+      {Key key,
+      this.imageFile,
+      this.imageURL,
+      this.cropStyle = CropStyle.rectangle,
+      this.cropRatioX,
+      this.cropRatioY,
+      this.borderRadius,
+      this.cropMaxWidth,
+      this.cropMaxHeight,
+      this.compressQuality,
+      this.aspectRatioPresets,
+      this.compressFormat,
+      this.androidUiSettings,
+      this.iosUiSettings,
+      this.icon,
+      this.setImage})
+      : super(key: key);
 
   final File imageFile;
   final String imageURL;
@@ -217,6 +227,7 @@ class _InkWidget extends StatefulWidget {
   final AndroidUiSettings androidUiSettings;
   final IOSUiSettings iosUiSettings;
   final Icon icon;
+  final Function(File) setImage;
 
   @override
   __InkWidgetState createState() => __InkWidgetState();
@@ -276,6 +287,7 @@ class __InkWidgetState extends State<_InkWidget> {
       onTap: () async {
         await getImage().then((imagen) {
           _imageFile = imagen;
+          widget.setImage(imagen);
         });
         setState(() {});
       },
