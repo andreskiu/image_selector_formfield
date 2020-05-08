@@ -239,6 +239,14 @@ class _InkWidget extends StatefulWidget {
 class __InkWidgetState extends State<_InkWidget> {
   File _imageFile;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.imageFile != null) {
+      _imageFile = widget.imageFile;
+    }
+  }
+
   Future<File> getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
