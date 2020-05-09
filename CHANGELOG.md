@@ -1,4 +1,11 @@
 
+## [1.0.3] - may 9, 2020.
+
+* BUG FIX - Initial image not showing
+* Added onChange callback
+
+**Thanks [Raymond Ativie](https://github.com/RaymondAtivie) for Pr's**
+
 ## [1.0.2] - march 3, 2020.
 
 * Replace the outdated image_picker_modern for the original image_picker. 

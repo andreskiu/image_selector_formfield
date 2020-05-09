@@ -4,9 +4,9 @@ This widget is a form field that allows the user to pick a image from gallery (s
 
 This widget is using and depends on this other widgets:
 
- - [image_picker_modern: ^0.4.12+3 ](https://pub.dev/packages/image_picker_modern)
+ - [image_picker: ^0.6.3+4 ](https://pub.dev/packages/image_picker)
  - [image_cropper: ^1.1.0](https://pub.dev/packages/image_cropper)
- - [cached_network_image: ^2.0.0-rc](https://pub.dev/packages/cached_network_image)
+ - [cached_network_image: ^2.0.1-rc](https://pub.dev/packages/cached_network_image)
 
  So, you need to follow the Installation Guide from each of them.
 
