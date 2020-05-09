@@ -27,6 +27,7 @@ class ImageSelectorFormField extends StatefulWidget {
       this.androidUiSettings,
       this.iosUiSettings,
       this.onSaved,
+      this.onChanged,
       this.validator,
       this.errorTextStyle,
       this.icon,
@@ -51,6 +52,7 @@ class ImageSelectorFormField extends StatefulWidget {
   final Icon icon;
   final Color backgroundColor;
   final void Function(File) onSaved;
+  final void Function(File) onChanged;
   final String Function(File) validator;
   @override
   _ImageSelectorFormFieldState createState() => _ImageSelectorFormFieldState();
@@ -63,6 +65,9 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
   double _borderRadius;
 
   void _setImage(imagen) {
+    if (_imageFile != imagen && widget.onChanged != null) {
+      widget.onChanged(imagen);
+    }
     _imageFile = imagen;
   }
 
@@ -233,6 +238,14 @@ class _InkWidget extends StatefulWidget {
 
 class __InkWidgetState extends State<_InkWidget> {
   File _imageFile;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.imageFile != null) {
+      _imageFile = widget.imageFile;
+    }
+  }
 
   Future<File> getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
