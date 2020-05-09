@@ -1,12 +1,12 @@
 library image_selector_formfield;
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image_picker_modern/image_picker_modern.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 export 'package:image_cropper/src/options.dart';
 
 class ImageSelectorFormField extends StatefulWidget {

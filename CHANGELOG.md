@@ -1,4 +1,8 @@
 
+## [1.0.2] - march 3, 2020.
+
+* Replace the outdated image_picker_modern for the original image_picker. 
+
 ## [1.0.1] - November 19, 2019.
 
 * BUG FIX - Image were not being passed to "onSave" and "Validator" callbacks;
