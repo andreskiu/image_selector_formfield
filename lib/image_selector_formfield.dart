@@ -297,6 +297,10 @@ class __InkWidgetState extends State<_InkWidget> {
           : Image.file(_imageFile),
       onTap: () async {
         await getImage().then((imagen) {
+          // Guard against tapping native cancel button clearing a previously 
+          // picked and cropped avatar
+          if(imagen == null) return;
+          
           _imageFile = imagen;
           widget.setImage(imagen);
         });
