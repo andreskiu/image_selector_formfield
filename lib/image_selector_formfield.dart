@@ -2,16 +2,15 @@ library image_selector_formfield;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_cropper/image_cropper.dart';
-
 import 'dart:io';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 export 'package:image_cropper/src/options.dart';
 
 class ImageSelectorFormField extends StatefulWidget {
   ImageSelectorFormField(
-      {Key key,
+      {Key? key,
       this.initialImage,
       this.imageURL = "",
       this.cropRatioX,
@@ -34,39 +33,39 @@ class ImageSelectorFormField extends StatefulWidget {
       this.backgroundColor = Colors.black12})
       : super(key: key);
 
-  final File initialImage;
+  final File? initialImage;
   final String imageURL;
-  final double cropRatioX;
-  final double cropRatioY;
+  final double? cropRatioX;
+  final double? cropRatioY;
   final BoxConstraints boxConstraints;
-  final double borderRadius;
+  final double? borderRadius;
   final int cropMaxWidth;
   final int cropMaxHeight;
   final CropStyle cropStyle;
   final int compressQuality;
   final List<CropAspectRatioPreset> aspectRatioPresets;
   final ImageCompressFormat compressFormat;
-  final AndroidUiSettings androidUiSettings;
-  final IOSUiSettings iosUiSettings;
-  final TextStyle errorTextStyle;
-  final Icon icon;
+  final AndroidUiSettings? androidUiSettings;
+  final IOSUiSettings? iosUiSettings;
+  final TextStyle? errorTextStyle;
+  final Icon? icon;
   final Color backgroundColor;
-  final void Function(File) onSaved;
-  final void Function(File) onChanged;
-  final String Function(File) validator;
+  final void Function(File?)? onSaved;
+  final void Function(File)? onChanged;
+  final String Function(File?)? validator;
   @override
   _ImageSelectorFormFieldState createState() => _ImageSelectorFormFieldState();
 }
 
 class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
-  File _imageFile;
-  String _imageURL;
-  double _aspectRatio;
-  double _borderRadius;
+  File? _imageFile;
+  String? _imageURL;
+  late double _aspectRatio;
+  double? _borderRadius;
 
   void _setImage(imagen) {
     if (_imageFile != imagen && widget.onChanged != null) {
-      widget.onChanged(imagen);
+      widget.onChanged!(imagen);
     }
     _imageFile = imagen;
   }
@@ -77,7 +76,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
     _imageURL = widget.imageURL;
     // set default aspect ratio
     if (widget.cropRatioX != null && widget.cropRatioY != null) {
-      _aspectRatio = widget.cropRatioX / widget.cropRatioY;
+      _aspectRatio = widget.cropRatioX! / widget.cropRatioY!;
     } else {
       _aspectRatio = 9 / 16;
     }
@@ -97,10 +96,10 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
   @override
   Widget build(BuildContext context) {
     return FormField<File>(onSaved: (_) {
-      if (widget.onSaved != null) return widget.onSaved(_imageFile);
+      if (widget.onSaved != null) return widget.onSaved!(_imageFile);
       return null;
     }, validator: (_) {
-      if (widget.validator != null) return widget.validator(_imageFile);
+      if (widget.validator != null) return widget.validator!(_imageFile);
       return null;
     }, builder: (state) {
       if (widget.cropStyle == CropStyle.rectangle) {
@@ -109,7 +108,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
             Container(
                 constraints: widget.boxConstraints,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(_borderRadius),
+                  borderRadius: BorderRadius.circular(_borderRadius!),
                   child: Container(
                     color: widget.backgroundColor,
                     child: AspectRatio(
@@ -143,7 +142,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
             state.hasError
                 ? Container(
                     padding: EdgeInsets.only(top: 5),
-                    child: Text(state.errorText,
+                    child: Text(state.errorText!,
                         style: this.widget.errorTextStyle))
                 : Container()
           ],
@@ -152,7 +151,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
         return Column(
           children: <Widget>[
             ClipRRect(
-              borderRadius: BorderRadius.circular(_borderRadius),
+              borderRadius: BorderRadius.circular(_borderRadius!),
               child: Container(
                 width: _borderRadius,
                 height: _borderRadius,
@@ -177,7 +176,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
                       icon: widget.icon ??
                           Icon(
                             Icons.add_a_photo,
-                            size: _borderRadius / 2,
+                            size: _borderRadius! / 2,
                             color: Colors.black45,
                           ),
                     )),
@@ -186,7 +185,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
             state.hasError
                 ? Container(
                     padding: EdgeInsets.only(top: 5),
-                    child: Text(state.errorText,
+                    child: Text(state.errorText!,
                         style: this.widget.errorTextStyle))
                 : Container()
           ],
@@ -198,7 +197,7 @@ class _ImageSelectorFormFieldState extends State<ImageSelectorFormField> {
 
 class _InkWidget extends StatefulWidget {
   _InkWidget(
-      {Key key,
+      {Key? key,
       this.imageFile,
       this.imageURL,
       this.cropStyle = CropStyle.rectangle,
@@ -216,28 +215,28 @@ class _InkWidget extends StatefulWidget {
       this.setImage})
       : super(key: key);
 
-  final File imageFile;
-  final String imageURL;
+  final File? imageFile;
+  final String? imageURL;
   final CropStyle cropStyle;
-  final double borderRadius;
-  final double cropRatioX;
-  final double cropRatioY;
-  final int cropMaxWidth;
-  final int cropMaxHeight;
-  final int compressQuality;
-  final List<CropAspectRatioPreset> aspectRatioPresets;
-  final ImageCompressFormat compressFormat;
-  final AndroidUiSettings androidUiSettings;
-  final IOSUiSettings iosUiSettings;
-  final Icon icon;
-  final Function(File) setImage;
+  final double? borderRadius;
+  final double? cropRatioX;
+  final double? cropRatioY;
+  final int? cropMaxWidth;
+  final int? cropMaxHeight;
+  final int? compressQuality;
+  final List<CropAspectRatioPreset>? aspectRatioPresets;
+  final ImageCompressFormat? compressFormat;
+  final AndroidUiSettings? androidUiSettings;
+  final IOSUiSettings? iosUiSettings;
+  final Icon? icon;
+  final Function(File?)? setImage;
 
   @override
   __InkWidgetState createState() => __InkWidgetState();
 }
 
 class __InkWidgetState extends State<_InkWidget> {
-  File _imageFile;
+  File? _imageFile;
 
   @override
   void initState() {
@@ -247,23 +246,26 @@ class __InkWidgetState extends State<_InkWidget> {
     }
   }
 
-  Future<File> getImage() async {
-    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future<File?> getImage() async {
+    final _picker = ImagePicker();
+    final pickedFile = await (_picker.getImage(source: ImageSource.gallery)
+        as FutureOr<PickedFile>);
+    File image = File(pickedFile.path);
     if (image != null) {
-      File croppedFile = await ImageCropper.cropImage(
+      File? croppedFile = await ImageCropper.cropImage(
         aspectRatio: widget.cropStyle == CropStyle.circle
             ? CropAspectRatio(ratioX: 1.0, ratioY: 1.0)
             : widget.cropRatioX != null && widget.cropRatioY != null
                 ? CropAspectRatio(
-                    ratioX: widget.cropRatioX, ratioY: widget.cropRatioY)
+                    ratioX: widget.cropRatioX!, ratioY: widget.cropRatioY!)
                 : null,
         sourcePath: image.path,
         maxWidth: widget.cropMaxWidth,
         maxHeight: widget.cropMaxHeight,
         cropStyle: widget.cropStyle,
-        compressQuality: widget.compressQuality,
-        compressFormat: widget.compressFormat,
-        aspectRatioPresets: widget.aspectRatioPresets,
+        compressQuality: widget.compressQuality!,
+        compressFormat: widget.compressFormat!,
+        aspectRatioPresets: widget.aspectRatioPresets!,
         androidUiSettings: widget.androidUiSettings,
         iosUiSettings: widget.iosUiSettings,
       );
@@ -290,15 +292,15 @@ class __InkWidgetState extends State<_InkWidget> {
               : (widget.imageURL != "" && widget.imageURL != null)
                   ? CachedNetworkImage(
                       alignment: Alignment.center,
-                      imageUrl: widget.imageURL,
+                      imageUrl: widget.imageURL!,
                       fit: BoxFit.cover,
                     )
                   : Container()
-          : Image.file(_imageFile),
+          : Image.file(_imageFile!),
       onTap: () async {
         await getImage().then((imagen) {
           _imageFile = imagen;
-          widget.setImage(imagen);
+          widget.setImage!(imagen);
         });
         setState(() {});
       },
