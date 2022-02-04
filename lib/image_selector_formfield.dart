@@ -248,30 +248,26 @@ class __InkWidgetState extends State<_InkWidget> {
 
   Future<File?> getImage() async {
     final _picker = ImagePicker();
-    final pickedFile = await (_picker.getImage(source: ImageSource.gallery)
-        as FutureOr<PickedFile>);
-    File image = File(pickedFile.path);
-    if (image != null) {
-      File? croppedFile = await ImageCropper.cropImage(
-        aspectRatio: widget.cropStyle == CropStyle.circle
-            ? CropAspectRatio(ratioX: 1.0, ratioY: 1.0)
-            : widget.cropRatioX != null && widget.cropRatioY != null
-                ? CropAspectRatio(
-                    ratioX: widget.cropRatioX!, ratioY: widget.cropRatioY!)
-                : null,
-        sourcePath: image.path,
-        maxWidth: widget.cropMaxWidth,
-        maxHeight: widget.cropMaxHeight,
-        cropStyle: widget.cropStyle,
-        compressQuality: widget.compressQuality!,
-        compressFormat: widget.compressFormat!,
-        aspectRatioPresets: widget.aspectRatioPresets!,
-        androidUiSettings: widget.androidUiSettings,
-        iosUiSettings: widget.iosUiSettings,
-      );
-      return croppedFile;
-    }
-    return null;
+    final pickedFile = await (_picker.getImage(source: ImageSource.gallery));
+    File image = File(pickedFile!.path);
+    File? croppedFile = await ImageCropper.cropImage(
+      aspectRatio: widget.cropStyle == CropStyle.circle
+          ? CropAspectRatio(ratioX: 1.0, ratioY: 1.0)
+          : widget.cropRatioX != null && widget.cropRatioY != null
+              ? CropAspectRatio(
+                  ratioX: widget.cropRatioX!, ratioY: widget.cropRatioY!)
+              : null,
+      sourcePath: image.path,
+      maxWidth: widget.cropMaxWidth,
+      maxHeight: widget.cropMaxHeight,
+      cropStyle: widget.cropStyle,
+      compressQuality: widget.compressQuality!,
+      compressFormat: widget.compressFormat!,
+      aspectRatioPresets: widget.aspectRatioPresets!,
+      androidUiSettings: widget.androidUiSettings,
+      iosUiSettings: widget.iosUiSettings,
+    );
+    return croppedFile;
   }
 
   @override
