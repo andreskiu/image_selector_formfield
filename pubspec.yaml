@@ -1,19 +1,19 @@
 name: image_selector_formfield
 description: This widget is a form field that allows the user to pick a image from gallery (soon from camera too), and then crop it. The widget is customizable and has all the posibilities expected on a Form Field.
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/andreskiu/image_selector_formfield
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
   flutter: ">= 1.10.15-pre.148 < 2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   
-  image_picker: ^0.6.3+4
-  image_cropper: ^1.1.0
-  cached_network_image: ^2.0.0-rc.1
+  image_picker: ^0.7.4
+  image_cropper: ^1.4.0
+  cached_network_image: ^3.0.0
 
 dev_dependencies:
   flutter_test:
